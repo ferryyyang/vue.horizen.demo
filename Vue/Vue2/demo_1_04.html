@@ -1,0 +1,80 @@
+<!--
+ * @Description: 
+ * @Author: wangzhaorui
+ * @Date: 2023-12-06 13:08:09
+ * @LastEditors: wangzhaorui
+ * @LastEditTime: 2023-12-08 23:51:29
+-->
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta base="/csf1/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="logo.svg">
+  <title>demo_1_04</title>
+</head>
+
+<body>
+  <div id="app">
+    <div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError }"></div>
+
+    <div class="static" v-bind:class="classObject"></div>
+
+    <div class="static" v-bind:class="computedClassObject"></div>
+
+    <div v-bind:class="[activeClass, errorClass]"></div>
+
+    <div v-bind:class="[isActive ? activeClass : '', errorClass]"></div>
+
+    <!-- 测试v-for就地更新 -->
+    <ul>
+      <li v-for="(item,index) in list" :class="item.name" :key="item.id">
+        {{item.id}}
+        <input type="text" :placeholder="item.name">
+        <button v-on:click="deleteLi(index)">删除</button>
+      </li>
+    </ul>
+  </div>
+
+  <script type="text/javascript" src="vue.min.js"></script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vue!',
+        isActive: 22,
+        hasError: false,
+        classObject: {
+          active: true,
+          'text-danger': false
+        },
+        error: false,
+        activeClass: 'active',
+        errorClass: 'text-danger',
+
+        list: [{ name: 'hello', id: 1 }, { name: 'world', id: 2 }]
+      },
+
+      computed: {
+        computedClassObject: function () {
+          return {
+            active: this.isActive && !this.error,
+            'text-danger': this.error && this.error.type === 'fatal'
+          }
+        }
+      },
+
+      methods: {
+        deleteLi(index) {
+          this.list.splice(index, 1)
+        }
+      }
+    })
+
+  </script>
+</body>
+
+</html>

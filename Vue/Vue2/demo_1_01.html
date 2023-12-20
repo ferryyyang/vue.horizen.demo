@@ -1,5 +1,13 @@
+<!--
+ * @Description: 
+ * @Author: wangzhaorui
+ * @Date: 2023-12-06 13:08:09
+ * @LastEditors: wangzhaorui
+ * @LastEditTime: 2023-12-07 15:04:49
+-->
 <!DOCTYPE html>
 <html lang="">
+
 <head>
   <meta base="/csf1/">
   <meta charset="utf-8">
@@ -11,16 +19,128 @@
 
 <body>
   <div id="app">
+    <todo-item :todo="todo"></todo-item>
     {{ message }}
   </div>
+
+  <div id="app-2">
+    <span v-bind:title="message">
+      鼠标悬停几秒钟查看此处动态绑定的提示信息！
+    </span>
+  </div>
+
+  <div id="app-3">
+    <p v-if="seen">现在你看到我了</p>
+  </div>
+
+  <div id="app-4">
+    <ol>
+      <li v-for="todo in todos">
+        {{ todo.text }}
+      </li>
+    </ol>
+  </div>
+
+  <div id="app-5">
+    <p>{{ message }}</p>
+    <button @click="reverseMessage">反转消息</button>
+  </div>
+
+  <div id="app-6">
+    <p>{{ message }}</p>
+    <input v-model="message">
+  </div>
+
   <script type="text/javascript" src="vue.min.js"></script>
   <script>
+    // 定义名为 todo-item 的新组件
+    Vue.component('todo-item', {
+      props: ['todo'],
+      template: '<li>{{ todo.text }}</li>'
+    })
+
     var app = new Vue({
       el: '#app',
+      data: {
+        message: 'Hello Vue!',
+        todo: { id: 0, text: '蔬菜' }
+      }
+    })
+
+    // console
+    // app.message = 'new Vue'
+
+    var app2 = new Vue({
+      el: '#app-2',
+      data: {
+        message: '页面加载于 ' + new Date().toLocaleString()
+      }
+    })
+
+    // console
+    // app2.message = 'new title'
+
+    var app3 = new Vue({
+      el: '#app-3',
+      data: {
+        seen: true
+      }
+    })
+
+    // console
+    // app3.seen = false
+
+    var app4 = new Vue({
+      el: '#app-4',
+      data: {
+        todos: [
+          { text: '学习 JavaScript' },
+          { text: '学习 Vue' },
+          { text: '整个牛项目' }
+        ]
+      }
+    })
+    // console
+    // app4.todos.push({ text: '新项目' })
+
+    var app5 = new Vue({
+      el: '#app-5',
+      data: {
+        message: 'Hello Vue.js!'
+      },
+      methods: {
+        reverseMessage: function () {
+          this.message = this.message.split('').reverse().join('')
+        }
+      }
+    })
+
+    var app6 = new Vue({
+      el: '#app-6',
       data: {
         message: 'Hello Vue!'
       }
     })
+
+    // 我们的数据对象
+    var data = { a: 1 }
+
+    // 该对象被加入到一个 Vue 实例中
+    var vm = new Vue({
+      data: data
+    })
+
+    // 获得这个实例上的 property
+    // 返回源数据中对应的字段
+    vm.a == data.a // => true
+
+    // 设置 property 也会影响到原始数据
+    vm.a = 2
+    data.a // => 2
+
+    // ……反之亦然
+    data.a = 3
+    vm.a // => 3
   </script>
 </body>
 

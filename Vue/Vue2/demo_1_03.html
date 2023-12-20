@@ -1,0 +1,118 @@
+<!--
+ * @Description: 
+ * @Author: wangzhaorui
+ * @Date: 2023-12-06 13:08:09
+ * @LastEditors: wangzhaorui
+ * @LastEditTime: 2023-12-08 23:27:16
+-->
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta base="/csf1/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="logo.svg">
+  <title>demo_1_03</title>
+</head>
+
+<body>
+  <div id="app">
+    {{ now }}
+    {{ now }}
+    {{ now }}
+    {{ firstName || '--' }}
+    {{ lastName || '@@'}}
+    {{ fullName || '##'}}
+  </div>
+
+  <div id="watch-example">
+    <p>
+      Ask a yes/no question:
+      <input v-model="question">
+    </p>
+    <p>{{ answer }}</p>
+  </div>
+
+  <script type="text/javascript" src="vue.min.js"></script>
+  <script src="../libs/axios@0.12.0/axios.min.js"></script>
+  <script src="../libs/lodash@4.13.1/lodash.min.js"></script>
+
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vue!',
+        firstName: '',
+        lastName: ''
+      },
+      computed: {
+        now: {
+          cache: true, // 缓存默认打开，false表示每次执行需要执行计算
+          get: function () {
+            console.log('执行了计算属性')
+            return Date.now()
+          }
+        },
+
+        fullName: {
+          // getter
+          get: function () {
+            console.log('执行名称计算属性get')
+            return this.firstName + ' ' + this.lastName
+          },
+          // setter
+          set: function (newValue) {
+            console.log('执行名称计算属性set')
+            var names = newValue.split(' ')
+            this.firstName = names[0]
+            this.lastName = names[names.length - 1]
+          }
+        }
+      }
+    })
+
+    var watchExampleVM = new Vue({
+      el: '#watch-example',
+      data: {
+        question: '',
+        answer: 'I cannot give you an answer until you ask a question!'
+      },
+      watch: {
+        // 如果 `question` 发生改变，这个函数就会运行
+        question: function (newQuestion, oldQuestion) {
+          this.answer = 'Waiting for you to stop typing...'
+          this.debouncedGetAnswer()
+        }
+      },
+      created: function () {
+        // `_.debounce` 是一个通过 Lodash 限制操作频率的函数。
+        // 在这个例子中，我们希望限制访问 yesno.wtf/api 的频率
+        // AJAX 请求直到用户输入完毕才会发出。想要了解更多关于
+        // `_.debounce` 函数 (及其近亲 `_.throttle`) 的知识，
+        // 请参考：https://lodash.com/docs#debounce
+        this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)
+      },
+      methods: {
+        getAnswer: function () {
+          if (this.question.indexOf('?') === -1) {
+            this.answer = 'Questions usually contain a question mark. ;-)'
+            return
+          }
+          this.answer = 'Thinking...'
+          var vm = this
+          axios.get('https://yesno.wtf/api')
+            .then(function (response) {
+              vm.answer = _.capitalize(response.data.answer)
+            })
+            .catch(function (error) {
+              vm.answer = 'Error! Could not reach the API. ' + error
+            })
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

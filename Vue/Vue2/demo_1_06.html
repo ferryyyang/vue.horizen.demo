@@ -1,0 +1,45 @@
+<!--
+ * @Description: 
+ * @Author: wangzhaorui
+ * @Date: 2023-12-06 13:08:09
+ * @LastEditors: wangzhaorui
+ * @LastEditTime: 2023-12-11 10:54:01
+-->
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta base="/csf1/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="logo.svg">
+  <title>demo_1_06</title>
+</head>
+
+<body>
+  <div id="app">
+    {{ message }}
+
+    <blog-post post-title1="hello!"></blog-post>
+  </div>
+
+  <script type="text/javascript" src="vue.min.js"></script>
+  <script>
+    Vue.component('blog-post', {
+      // 在 JavaScript 中是 camelCase 的
+      props: ['post-title'],
+      template: '<h3>{{ postTitle }}</h3>'
+    })
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vue!',
+      }
+    })
+
+  </script>
+</body>
+
+</html>
